@@ -10,7 +10,7 @@ An API that parses search suggestions from a number of search providers. Might n
 -   Qwant
 -   Baidu
 
-Try it here: https://suggestions.victr.me/
+Live API: https://suggest.apanzinc.top/
 
 ## How to use
 
@@ -144,7 +144,9 @@ wrangler deploy
 
 ## Deployment
 
-This project is a Cloudflare Worker. Deploy it with Wrangler:
+This project is deployed as a Cloudflare Worker at https://suggest.apanzinc.top/ and is connected to GitHub, so every push to `main` redeploys automatically.
+
+To deploy your own instance with Wrangler:
 
 1. Install Node.js and npx, then log in to your Cloudflare account:
 
