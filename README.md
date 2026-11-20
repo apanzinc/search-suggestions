@@ -12,6 +12,8 @@ An API that parses search suggestions from a number of search providers. Might n
 
 Live API: https://suggest.apanzinc.top/
 
+Try it (click to open a live Chinese response): [baidu · 天气 · zh-CN](https://suggest.apanzinc.top/?with=baidu&q=%E5%A4%A9%E6%B0%94&l=zh-CN)
+
 ## How to use
 
 #### Endpoint
