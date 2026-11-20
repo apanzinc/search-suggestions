@@ -1,5 +1,6 @@
 import { fetchProviderText } from '../index.ts'
 import type { Suggestions } from '../index.ts'
+import { providerParams, type Locale } from '../locale.ts'
 
 type GoogleDefinition = {
 	l: {
@@ -19,10 +20,15 @@ type GoogleAPI = [
 	}]],
 ]
 
-export async function google(q: string, lang: string): Promise<Suggestions> {
-	const base = 'https://www.google.com/complete/search?q=%q&hl=%l&client=gws-wiz'
-	const url = base.replace('%q', q).replace('%l', lang)
-	let text = (await fetchProviderText(url)) ?? ''
+export async function google(q: string, locale?: Locale): Promise<Suggestions> {
+	const url = new URL('https://www.google.com/complete/search')
+	url.searchParams.set('q', q)
+	url.searchParams.set('client', 'gws-wiz')
+	for (const [key, value] of Object.entries(providerParams(locale, 'google'))) {
+		url.searchParams.set(key, value)
+	}
+
+	let text = (await fetchProviderText(url.toString(), locale)) ?? ''
 
 	try {
 		text = text.replace('window.google.ac.h(', '')

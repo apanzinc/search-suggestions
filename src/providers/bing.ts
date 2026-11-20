@@ -1,5 +1,6 @@
 import { fetchProviderJson } from '../index.ts'
 import type { Suggestions } from '../index.ts'
+import { providerParams, type Locale } from '../locale.ts'
 
 type Bing = {
 	s: {
@@ -13,12 +14,18 @@ type Bing = {
 	}[]
 }
 
-export async function bing(q: string, lang: string): Promise<Suggestions> {
-	lang = lang.includes('-') ? lang : lang + '-' + lang
+export async function bing(q: string, locale?: Locale): Promise<Suggestions> {
+	const url = new URL('https://www.bing.com/AS/Suggestions')
+	url.searchParams.set('qry', q)
+	url.searchParams.set('cp', '5')
+	url.searchParams.set('csr', '1')
+	url.searchParams.set('msbqf', 'false')
+	url.searchParams.set('cvid', '7AE3B40123C74FFF87EF8A5ED4FAF455')
+	for (const [key, value] of Object.entries(providerParams(locale, 'bing'))) {
+		url.searchParams.set(key, value)
+	}
 
-	const base = 'https://www.bing.com/AS/Suggestions?qry=%q&mkt=%l&cp=5&csr=1&msbqf=false&cvid=7AE3B40123C74FFF87EF8A5ED4FAF455'
-	const url = base.replace('%q', q).replace('%l', lang)
-	const json = await fetchProviderJson<Bing>(url)
+	const json = await fetchProviderJson<Bing>(url.toString(), locale)
 	const result: Suggestions = []
 
 	if (!json) {

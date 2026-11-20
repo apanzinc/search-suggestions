@@ -33,3 +33,8 @@ Deno.test('Brave', async () => {
 	const response = await handler({ q: 'hello', with: 'brave', lang: '' })
 	testResponse(response)
 })
+
+Deno.test('Baidu', async () => {
+	const response = await handler({ q: 'hello', with: 'baidu', lang: '' })
+	testResponse(response)
+})

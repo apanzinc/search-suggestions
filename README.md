@@ -8,6 +8,7 @@ An API that parses search suggestions from a number of search providers. Might n
 -   Bing ( w/ presentations )
 -   Duckduckgo
 -   Qwant
+-   Baidu
 
 Try it here: https://suggestions.victr.me/
 
@@ -31,6 +32,29 @@ type Response = {
   desc?: string // when presentation is available
   image?: string // when presentation is available
 }[]
+```
+
+### Chinese support
+
+Pass a Chinese locale in `l` to get Simplified Chinese suggestions. All of
+`zh`, `zh-CN`, `zh-Hans`, `zh_CN`, `zh-Hans-CN` and `zh-SG` resolve to
+Simplified Chinese; `zh-TW`, `zh-Hant`, `zh-HK` and `zh-MO` resolve to
+Traditional Chinese. Google, Bing and DuckDuckGo receive the matching region
+code (`gl` / `mkt` / `kl`), and `baidu` is available as a China-focused source.
+
+```HTTP
+GET /?with=baidu&q=%E6%88%91%E5%9B%BD&l=zh-CN
+```
+
+```json
+[
+  { "text": "我国有多少个省" },
+  { "text": "我国境内最晚直立人化石被发现" }
+]
+```
+
+```HTTP
+GET /?with=google&q=minecraft&l=zh-CN
 ```
 
 ### Websockets
@@ -107,7 +131,7 @@ deno install
 
 deno task test
 # Task test deno test --allow-net
-# ok | 11 passed | 0 failed (2s)
+# ok | 15 passed | 0 failed (2s)
 
 deno task dev
 # Task dev npx wrangler dev
@@ -117,3 +141,32 @@ deno task dev
 
 wrangler deploy
 ```
+
+## Deployment
+
+This project is a Cloudflare Worker. Deploy it with Wrangler:
+
+1. Install Node.js and npx, then log in to your Cloudflare account:
+
+   ```bash
+   npx wrangler login
+   ```
+
+2. From the repository root, deploy:
+
+   ```bash
+   npx wrangler deploy
+   ```
+
+   Wrangler reads `wrangler.toml` (`main = "src/worker.ts"`) and publishes the
+   worker. It prints a public `https://<name>.<subdomain>.workers.dev` URL.
+
+3. Verify:
+
+   ```bash
+   curl "https://<name>.<subdomain>.workers.dev/?with=baidu&q=hello&l=zh-CN"
+   ```
+
+To run locally first, use `npx wrangler dev` (serves on `http://localhost:8787`).
+To give the worker your own domain, add a `routes` entry to `wrangler.toml`
+before deploying.
